@@ -1,88 +1,113 @@
 import 'package:flutter/material.dart';
+
 import 'dietPlanDetailsPage.dart';
-import 'diet_data.dart'; // Import the data file
 
 class HomePage extends StatelessWidget {
+  final List<Map<String, String>> dietPlans = [
+    {
+      "name": "Low-Carb Diet",
+      "image": "assets/images/lowcarb.jfif",
+    },
+    {
+      "name": "Keto Diet",
+      "image": "assets/images/keto.jfif",
+    },
+    {
+      "name": "High-Protein Diet",
+      "image": "assets/images/hprotein.jfif",
+    },
+    {
+      "name": "Mediterranean Diet",
+      "image": "assets/images/intermittent.jfif",
+    },
+    {
+      "name": "Vegetarian Diet",
+      "image": "assets/images/veg.jfif",
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Diet Plan App'),
+        title: Text('Premium Diets'),
         centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Your Diet Plans',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                itemCount: dietPlans.length, // Use dietPlans list length
-                itemBuilder: (context, index) {
-                  return Card(
-                    elevation: 2,
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    child: ListTile(
-                      title: Text(dietPlans[index].name), // Display the diet name
-                      subtitle: Text(dietPlans[index].description),
-                      trailing: Icon(Icons.chevron_right),
-                      onTap: () {
-                        // Navigate to the diet plan details
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DietPlanDetailsPage(
-                              dietPlanName: dietPlans[index].name,
-                              dietPlanDescription: dietPlans[index].description,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to the add new diet plan page
+        child: ListView.builder(
+          itemCount: dietPlans.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                // Navigate to the DietPlanDetailsPage with data
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AddNewDietPlanPage(),
+                    builder: (context) => DietPlanDetailsPage(
+                      dietPlanName: dietPlans[index]["name"]!,
+                      dietPlanImage: dietPlans[index]["image"]!,
+                    ),
                   ),
                 );
               },
-              child: Text('Add New Diet Plan'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50), // Full width
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                margin: EdgeInsets.symmetric(vertical: 10),
+                elevation: 5,
+                clipBehavior: Clip.antiAlias,
+                child: Stack(
+                  children: [
+                    // Background image
+                    Image.asset(
+                      dietPlans[index]["image"]!,
+                      height: 150,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                    // Overlay to darken the image
+                    Container(
+                      height: 150,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
+                      ),
+                    ),
+                    // Diet Plan Text
+                    Positioned(
+                      left: 16,
+                      bottom: 16,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            dietPlans[index]["name"]!,
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            "DIET",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Add New Diet Plan Page
-class AddNewDietPlanPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Add New Diet Plan'),
-      ),
-      body: Center(
-        child: Text(
-          'Form to add a new diet plan goes here.',
-          style: TextStyle(fontSize: 24),
+            );
+          },
         ),
       ),
     );
